@@ -4,13 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/axios';
 import { useAuth } from '@/context/AuthContext';
-import { Lock, User, AlertCircle, Loader2, Wallet } from 'lucide-react';
+import { Lock, User, AlertCircle, Loader2, Wallet, Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
   const { login: setAuthLogin } = useAuth();
-  const [username, setUsername] = useState('admin');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -66,31 +67,43 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-zinc-300 mb-1.5">اسم المستخدم *</label>
-            <div className="relative">
-              <User className="w-5 h-5 text-zinc-400 absolute right-3.5 top-3" />
+            <div className="relative flex items-center">
+              <User className="w-5 h-5 text-zinc-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
               <input
                 type="text"
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="أدخل اسم المستخدم..."
-                className="w-full pr-11 pl-4 py-3 bg-[#070d19]/80 border border-slate-800 rounded-xl text-sm font-medium focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 text-white outline-none transition"
+                className="w-full !pr-11 !pl-4 !py-3 bg-[#070d19]/80 border border-slate-800 rounded-xl text-sm font-medium focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 text-white outline-none transition"
               />
             </div>
           </div>
 
           <div>
             <label className="block text-xs font-bold text-zinc-300 mb-1.5">كلمة المرور *</label>
-            <div className="relative">
-              <Lock className="w-5 h-5 text-zinc-400 absolute right-3.5 top-3" />
+            <div className="relative flex items-center">
+              <Lock className="w-5 h-5 text-zinc-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pr-11 pl-4 py-3 bg-[#070d19]/80 border border-slate-800 rounded-xl text-sm font-mono focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 text-white outline-none transition"
+                className="w-full !pr-11 !pl-11 !py-3 bg-[#070d19]/80 border border-slate-800 rounded-xl text-sm font-mono focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 text-white outline-none transition"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-cyan-400 transition p-1 focus:outline-none"
+                title={showPassword ? 'إخفاء كلمة المرور' : 'عرض كلمة المرور'}
+              >
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
             </div>
           </div>
 
@@ -109,14 +122,7 @@ export default function LoginPage() {
             )}
           </button>
         </form>
-
-        <div className="pt-4 border-t border-slate-800 text-center">
-          <p className="text-xs text-zinc-400 font-medium">
-            الحساب التلقائي التجريبي: <span className="font-mono text-cyan-400 font-bold">admin</span> / <span className="font-mono text-cyan-400 font-bold">AdminPass123!</span>
-          </p>
-        </div>
       </div>
     </div>
   );
-
 }
