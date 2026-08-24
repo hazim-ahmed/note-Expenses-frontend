@@ -141,7 +141,7 @@ export default function MobileNavigation() {
       )}
 
       {/* Bottom Navigation Bar */}
-      <nav className="md:hidden fixed inset-x-0 bottom-0 z-[100] bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 shadow-lg px-2 py-1.5">
+      <nav className="md:hidden fixed inset-x-0 bottom-0 z-[100] bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 shadow-xl px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         <div className="flex items-center justify-around">
           {navLinks.map((link) => {
             const active = isPrimaryActive(link.href) && !isMoreOpen;
