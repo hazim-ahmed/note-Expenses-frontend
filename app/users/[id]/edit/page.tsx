@@ -13,6 +13,7 @@ export default function EditUserPage() {
   const userId = params.id;
   const queryClient = useQueryClient();
 
+  const [username, setUsername] = useState('');
   const [fullName, setFullName] = useState('');
   const [employeeNumber, setEmployeeNumber] = useState('');
   const [email, setEmail] = useState('');
@@ -27,6 +28,7 @@ export default function EditUserPage() {
 
   useEffect(() => {
     if (user) {
+      setUsername(user.username || '');
       setFullName(user.fullName || '');
       setEmployeeNumber(user.employeeNumber || '');
       setEmail(user.email || '');
@@ -54,7 +56,13 @@ export default function EditUserPage() {
     e.preventDefault();
     setErrorMessage('');
 
+    if (username.trim().length < 3) {
+      setErrorMessage('اسم المستخدم يجب أن يتكون من 3 أحرف على الأقل');
+      return;
+    }
+
     updateMutation.mutate({
+      username: username.trim(),
       fullName: fullName.trim(),
       employeeNumber: employeeNumber.trim() || null,
       email: email.trim() || null,
@@ -80,7 +88,7 @@ export default function EditUserPage() {
               <Edit className="w-6 h-6 text-blue-600" />
               <span>تعديل حساب المستخدم ({user?.username})</span>
             </h1>
-            <p className="text-sm text-slate-500 mt-1">تحديث الاسم الكامل، الرقم الوظيفي، والبريد الإلكتروني</p>
+            <p className="text-sm text-slate-500 mt-1">تحديث اسم المستخدم، الاسم الكامل، الرقم الوظيفي، والبريد الإلكتروني</p>
           </div>
 
           <button
@@ -101,6 +109,21 @@ export default function EditUserPage() {
 
         <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                اسم المستخدم (Username) *
+                <span className="text-[11px] font-normal text-slate-500 mr-2">(يُستخدم لتسجيل الدخول ويجب أن يكون فريداً)</span>
+              </label>
+              <input
+                type="text"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="مثال: ahmed.accountant"
+                className="w-full p-2.5 border border-slate-300 rounded-xl bg-slate-50 text-sm font-mono font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              />
+            </div>
+
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">الاسم الكامل *</label>
               <input
@@ -108,7 +131,7 @@ export default function EditUserPage() {
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full p-2.5 border border-slate-300 rounded-xl bg-slate-50 text-sm font-bold text-slate-800"
+                className="w-full p-2.5 border border-slate-300 rounded-xl bg-slate-50 text-sm font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
               />
             </div>
 
@@ -118,7 +141,7 @@ export default function EditUserPage() {
                 type="text"
                 value={employeeNumber}
                 onChange={(e) => setEmployeeNumber(e.target.value)}
-                className="w-full p-2.5 border border-slate-300 rounded-xl bg-slate-50 text-sm font-mono text-slate-800"
+                className="w-full p-2.5 border border-slate-300 rounded-xl bg-slate-50 text-sm font-mono text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
               />
             </div>
 
@@ -128,7 +151,7 @@ export default function EditUserPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-2.5 border border-slate-300 rounded-xl bg-slate-50 text-sm font-semibold text-slate-800"
+                className="w-full p-2.5 border border-slate-300 rounded-xl bg-slate-50 text-sm font-semibold text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
               />
             </div>
 
@@ -138,7 +161,7 @@ export default function EditUserPage() {
                 type="text"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full p-2.5 border border-slate-300 rounded-xl bg-slate-50 text-sm font-semibold text-slate-800"
+                className="w-full p-2.5 border border-slate-300 rounded-xl bg-slate-50 text-sm font-semibold text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
               />
             </div>
           </div>
