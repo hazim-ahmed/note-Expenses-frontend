@@ -231,31 +231,32 @@ export default function JournalDetailPage() {
           </div>
         </div>
 
-        {/* الترويسة المحاسبية الرسمية للطباعة (تظهر فقط عند الطباعة أو التصدير) */}
-        <div className="hidden print:block mb-4 border-b-2 border-slate-800 pb-3">
-          <div className="flex items-start justify-between mb-3">
-            <div className="text-right w-1/3">
-              <h2 className="text-xs font-bold text-slate-900">نظام إدارة المصروفات وسندات الصرف</h2>
-              <span className="text-[10px] text-slate-600 block">إدارة الشؤون المالية والحسابات العامة</span>
+        {/* الترويسة المحاسبية الرسمية للطباعة (أبيض وأسود مع بيانات الشركة) */}
+        <div className="hidden print:block mb-4 border-b-2 border-black pb-3 text-black">
+          <div className="flex items-start justify-between mb-2">
+            <div className="text-right w-1/3 space-y-0.5">
+              <h2 className="text-sm font-extrabold text-black">شركة إدارة المشاريع والخدمات العامة</h2>
+              <span className="text-[10px] text-black block">إدارة الشؤون المالية والمصروفات</span>
+              <span className="text-[9px] text-neutral-600 block">س.ت: 1010000000 | الرقم الضريبي: 300000000000003</span>
             </div>
             <div className="text-center w-1/3">
-              <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">« دفتر المصروفات »</h1>
-              <span className="text-[11px] font-semibold text-slate-700 block">
+              <h1 className="text-xl font-black text-black tracking-wide border-b border-black pb-1 inline-block">دفتر المصروفات</h1>
+              <span className="text-[11px] font-bold text-black block mt-1">
                 {journal.status === 'CLOSED' ? 'سجل اليومية العامة المعتمدة' : 'سجل اليومية العامة - قيد المراجعة'}
               </span>
             </div>
-            <div className="text-left w-1/3 text-[10px] text-slate-600 space-y-0.5">
-              <div><strong>رقم الكشف:</strong> <span className="font-mono">{journal.journalNumber || journalId}</span></div>
-              <div><strong>تاريخ التقرير:</strong> {new Date(journal.journalDate).toLocaleDateString('ar-SA')}</div>
-              <div><strong>وقت الإنشاء:</strong> {new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}</div>
+            <div className="text-left w-1/3 text-[10px] text-black space-y-0.5">
+              <div><strong>رقم الكشف:</strong> <span className="font-mono font-bold">{journal.journalNumber || journalId}</span></div>
+              <div><strong>تاريخ اليومية:</strong> {new Date(journal.journalDate).toLocaleDateString('ar-SA')}</div>
+              <div><strong>تاريخ الطباعة:</strong> {new Date().toLocaleDateString('ar-SA')} - {new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}</div>
             </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-0 border border-slate-300 bg-slate-50 text-[11px] text-slate-800">
-            <div className="p-2 border-l border-slate-300"><strong>عدد المصروفات:</strong> <span className="font-mono font-bold">{totalCount} سند</span></div>
-            <div className="p-2 border-l border-slate-300"><strong>إجمالي قيمة المصروفات:</strong> <span className="font-mono font-bold text-slate-900">{totalAmount.toLocaleString()} ر.س</span></div>
-            <div className="p-2 border-l border-slate-300"><strong>تاريخ بداية الفترة:</strong> {new Date(journal.journalDate).toLocaleDateString('ar-SA')}</div>
-            <div className="p-2"><strong>الصندوق المالي:</strong> {journal.cashbox?.name || 'الصندوق الرئيسي'}</div>
+          <div className="grid grid-cols-4 gap-0 border border-black bg-neutral-50 text-[11px] text-black">
+            <div className="p-1.5 border-l border-black"><strong>الصندوق المالي:</strong> {journal.cashbox?.name || 'الصندوق الرئيسي'}</div>
+            <div className="p-1.5 border-l border-black"><strong>تاريخ الفترة:</strong> {new Date(journal.journalDate).toLocaleDateString('ar-SA')}</div>
+            <div className="p-1.5 border-l border-black"><strong>عدد السندات:</strong> <span className="font-mono font-bold">{totalCount} سند</span></div>
+            <div className="p-1.5"><strong>إجمالي المصروفات:</strong> <span className="font-mono font-black">{totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ر.س</span></div>
           </div>
         </div>
 
@@ -279,62 +280,62 @@ export default function JournalDetailPage() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-right border-collapse text-sm print:text-[10px]">
+            <table className="w-full text-right border-collapse text-sm print:text-[10px] print:text-black">
               <thead>
-                <tr className="bg-slate-800 dark:bg-slate-800 text-white border-b border-slate-300 text-xs font-bold print:bg-[#1F2937] print:text-white">
-                  <th className="p-2.5 text-center w-10">#</th>
-                  <th className="p-2.5 text-center">تاريخ المصروف</th>
-                  <th className="p-2.5">بيان المصروف</th>
-                  <th className="p-2.5">المستفيد</th>
-                  <th className="p-2.5">التصنيف</th>
-                  <th className="p-2.5">مركز التكلفة (المشروع)</th>
-                  <th className="p-2.5 text-center">رقم السند</th>
-                  <th className="p-2.5 text-center">رقم الفاتورة</th>
-                  <th className="p-2.5 text-left font-mono">المبلغ</th>
-                  <th className="p-2.5">الملاحظات</th>
-                  <th className="p-2.5 print:hidden">الإجراءات</th>
+                <tr className="bg-slate-800 dark:bg-slate-800 text-white border-b border-slate-300 text-xs font-bold print:bg-neutral-100 print:text-black print:border-black">
+                  <th className="p-2 text-center w-8 print:border print:border-black">#</th>
+                  <th className="p-2 text-center print:border print:border-black">تاريخ المصروف</th>
+                  <th className="p-2 print:border print:border-black">بيان المصروف</th>
+                  <th className="p-2 print:border print:border-black">المستفيد</th>
+                  <th className="p-2 print:border print:border-black">التصنيف</th>
+                  <th className="p-2 print:border print:border-black">مركز التكلفة (المشروع)</th>
+                  <th className="p-2 text-center print:border print:border-black">رقم السند</th>
+                  <th className="p-2 text-center print:border print:border-black">رقم الفاتورة</th>
+                  <th className="p-2 text-left font-mono print:border print:border-black">المبلغ</th>
+                  <th className="p-2 print:border print:border-black">الملاحظات</th>
+                  <th className="p-2 print:hidden">الإجراءات</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80 print:divide-black">
                 {txs.length === 0 ? (
                   <tr>
-                    <td colSpan={11} className="p-8 text-center text-slate-500 font-bold text-base">
+                    <td colSpan={11} className="p-8 text-center text-black font-bold text-base print:border print:border-black">
                       لا توجد مصروفات خلال الفترة المحددة
                     </td>
                   </tr>
                 ) : (
                   <>
                     {txs.map((tx: any, idx: number) => (
-                      <tr key={tx.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 print:even:bg-[#F8FAFC]">
-                        <td className="p-2.5 text-center font-mono text-slate-500">{idx + 1}</td>
-                        <td className="p-2.5 text-center font-mono text-xs">{new Date(tx.createdAt || journal.journalDate).toLocaleDateString('ar-SA')}</td>
-                        <td className="p-2.5 font-medium text-slate-800 dark:text-slate-200 max-w-xs">{tx.description || '—'}</td>
-                        <td className="p-2.5 font-semibold text-slate-700 dark:text-slate-300">{tx.beneficiary?.name || tx.beneficiaryName || '—'}</td>
-                        <td className="p-2.5 text-xs text-slate-600 dark:text-slate-400">{tx.category?.name || '—'}</td>
-                        <td className="p-2.5 font-semibold text-xs">
+                      <tr key={tx.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 print:even:bg-neutral-50">
+                        <td className="p-2 text-center font-mono text-slate-500 print:text-black print:border print:border-black">{idx + 1}</td>
+                        <td className="p-2 text-center font-mono text-xs print:text-black print:border print:border-black">{new Date(tx.createdAt || journal.journalDate).toLocaleDateString('ar-SA')}</td>
+                        <td className="p-2 font-medium text-slate-800 dark:text-slate-200 max-w-xs print:text-black print:border print:border-black">{tx.description || '—'}</td>
+                        <td className="p-2 font-semibold text-slate-700 dark:text-slate-300 print:text-black print:border print:border-black">{tx.beneficiary?.name || tx.beneficiaryName || '—'}</td>
+                        <td className="p-2 text-xs text-slate-600 dark:text-slate-400 print:text-black print:border print:border-black">{tx.category?.name || '—'}</td>
+                        <td className="p-2 font-semibold text-xs print:text-black print:border print:border-black">
                           {tx.project ? (
-                            <span className="text-slate-800 dark:text-cyan-300 print:text-slate-800">
+                            <span className="text-slate-800 dark:text-cyan-300 print:text-black">
                               {tx.project.projectName}
                             </span>
                           ) : (
-                            <span className="text-rose-600 print:text-slate-500">
+                            <span className="text-rose-600 print:text-neutral-500">
                               —
                             </span>
                           )}
                         </td>
-                        <td className="p-2.5 text-center font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
+                        <td className="p-2 text-center font-mono text-xs font-bold text-slate-700 dark:text-slate-300 print:text-black print:border print:border-black">
                           {tx.manualVoucherNumber || tx.systemReference || '—'}
                         </td>
-                        <td className="p-2.5 text-center font-mono text-xs text-slate-600 dark:text-slate-400">
+                        <td className="p-2 text-center font-mono text-xs text-slate-600 dark:text-slate-400 print:text-black print:border print:border-black">
                           {tx.invoiceNumber || '—'}
                         </td>
-                        <td className="p-2.5 font-bold text-slate-900 dark:text-cyan-400 text-left font-mono whitespace-nowrap">
+                        <td className="p-2 font-bold text-slate-900 dark:text-cyan-400 text-left font-mono whitespace-nowrap print:text-black print:border print:border-black">
                           {Number(tx.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ر.س
                         </td>
-                        <td className="p-2.5 text-slate-500 dark:text-slate-400 text-xs max-w-[150px]" title={tx.notes || ''}>
+                        <td className="p-2 text-slate-500 dark:text-slate-400 text-xs max-w-[150px] print:text-black print:border print:border-black" title={tx.notes || ''}>
                           {tx.notes || '—'}
                         </td>
-                        <td className="p-2.5 print:hidden">
+                        <td className="p-2 print:hidden">
                           {!tx.projectId && (
                             <Link
                               href={`/unassigned-projects?txId=${tx.id}`}
@@ -347,12 +348,12 @@ export default function JournalDetailPage() {
                       </tr>
                     ))}
                     {/* صف الإجمالي الكلي للجدول */}
-                    <tr className="bg-slate-100 dark:bg-slate-800/90 font-bold text-slate-900 dark:text-white border-t-2 border-slate-800 print:bg-[#EEF2F6]">
-                      <td colSpan={8} className="p-3 text-center font-extrabold text-sm">الإجمالي الكلي</td>
-                      <td className="p-3 font-extrabold text-sm text-left font-mono whitespace-nowrap">
+                    <tr className="bg-slate-100 dark:bg-slate-800/90 font-bold text-slate-900 dark:text-white border-t-2 border-slate-800 print:bg-neutral-100 print:text-black print:border-t-2 print:border-b-4 print:border-black">
+                      <td colSpan={8} className="p-2.5 text-center font-extrabold text-sm print:text-black print:border print:border-black">الإجمالي الكلي</td>
+                      <td className="p-2.5 font-extrabold text-sm text-left font-mono whitespace-nowrap print:text-black print:border print:border-black">
                         {totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ر.س
                       </td>
-                      <td colSpan={2}></td>
+                      <td colSpan={2} className="print:border print:border-black"></td>
                     </tr>
                   </>
                 )}
@@ -361,8 +362,8 @@ export default function JournalDetailPage() {
           </div>
         </div>
 
-        {/* Live Journal Totals Summary Footer Bar */}
-        <div className="bg-slate-900 dark:bg-[#070d19] text-white p-5 rounded-2xl border border-slate-800 dark:border-slate-800/80 shadow-xl flex flex-wrap items-center justify-between gap-6">
+        {/* Live Journal Totals Summary Footer Bar (يظهر فقط على شاشة الويب ومخفي في الطباعة) */}
+        <div className="bg-slate-900 dark:bg-[#070d19] text-white p-5 rounded-2xl border border-slate-800 dark:border-slate-800/80 shadow-xl flex flex-wrap items-center justify-between gap-6 print:hidden">
           <div className="flex flex-wrap items-center gap-6 sm:gap-8">
             <div>
               <span className="text-xs text-slate-400 block font-bold">عدد السندات</span>
@@ -387,29 +388,23 @@ export default function JournalDetailPage() {
           </div>
         </div>
 
-        {/* قسم التواقيع والاعتمادات الرسمية الثلاثية للطباعة والمحاسبة */}
-        <div className="signatures-section hidden print:flex items-start justify-between pt-10 px-6 mt-6 border-t border-slate-300">
-          <div className="text-center w-52 space-y-8">
-            <span className="font-extrabold text-xs text-slate-800 block">إعداد: أمين الصندوق / المنظم</span>
-            <div className="border-t border-slate-700 pt-1">
-              <span className="text-[11px] text-slate-600 block">الاسم: ...................................</span>
-              <span className="text-[11px] text-slate-600 block mt-1">التوقيع: .................................</span>
+        {/* قسم التواقيع والاعتمادات الرسمية أسفل التقرير للطباعة */}
+        <div className="signatures-section hidden print:flex items-start justify-between pt-8 px-12 mt-6 border-t border-black text-black">
+          <div className="text-center w-64 space-y-6">
+            <span className="font-extrabold text-xs text-black block">توقيع المشرف / المسؤول</span>
+            <div className="border-t border-black pt-1.5 space-y-1 text-right">
+              <span className="text-[11px] text-black block">الاسم: .................................................</span>
+              <span className="text-[11px] text-black block">التوقيع: ...............................................</span>
+              <span className="text-[11px] text-black block">التاريخ: .... / .... / 2026 م</span>
             </div>
           </div>
 
-          <div className="text-center w-52 space-y-8">
-            <span className="font-extrabold text-xs text-slate-800 block">تدقيق: المشرف المالي / المراجع</span>
-            <div className="border-t border-slate-700 pt-1">
-              <span className="text-[11px] text-slate-600 block">الاسم: ...................................</span>
-              <span className="text-[11px] text-slate-600 block mt-1">التوقيع: .................................</span>
-            </div>
-          </div>
-
-          <div className="text-center w-52 space-y-8">
-            <span className="font-extrabold text-xs text-slate-800 block">اعتماد: المدير العام / الإدارة</span>
-            <div className="border-t border-slate-700 pt-1">
-              <span className="text-[11px] text-slate-600 block">الاعتماد: ..............................</span>
-              <span className="text-[11px] text-slate-600 block mt-1">التاريخ والختم: [ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ]</span>
+          <div className="text-center w-64 space-y-6">
+            <span className="font-extrabold text-xs text-black block">توقيع واعتماد الإدارة</span>
+            <div className="border-t border-black pt-1.5 space-y-1 text-right">
+              <span className="text-[11px] text-black block">الاعتماد: ..............................................</span>
+              <span className="text-[11px] text-black block">الختم الرسمي: [ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ]</span>
+              <span className="text-[11px] text-black block">التاريخ: .... / .... / 2026 م</span>
             </div>
           </div>
         </div>
