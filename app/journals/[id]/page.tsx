@@ -80,8 +80,16 @@ export default function JournalDetailPage() {
     }
   };
 
-  const handleExportPDF = () => {
-    window.print();
+  const handleExportPDF = async () => {
+    try {
+      setIsExportingPdf(true);
+      await downloadFile(`/journals/${journalId}/export/pdf`, `Journal_${journal?.journalNumber || journalId}.pdf`);
+    } catch {
+      // Fallback للطباعة المباشرة من المتصفح في حال تعذر الاتصال
+      window.print();
+    } finally {
+      setIsExportingPdf(false);
+    }
   };
 
   const { data: journal, isLoading, error } = useQuery({
