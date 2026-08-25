@@ -243,7 +243,7 @@ export default function JournalDetailPage() {
           <div className="p-4 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 font-bold text-slate-700 dark:text-slate-200 text-sm flex items-center justify-between">
             <span>سندات الصرف في هذه اليومية ({totalCount} سند)</span>
             {unassignedCount > 0 && (
-              <span className="text-xs font-black text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-3 py-1 rounded-lg border border-rose-200 dark:border-rose-800/60">
+              <span className="text-xs font-black text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-3 py-1 rounded-lg border border-rose-200 dark:border-rose-800/60 print:hidden">
                 يوجد {unassignedCount} سندات بدون مشروع
               </span>
             )}
@@ -263,7 +263,7 @@ export default function JournalDetailPage() {
                   <th className="p-3">رقم الفاتورة</th>
                   <th className="p-3">ملاحظات</th>
                   <th className="p-3">المبلغ</th>
-                  <th className="p-3">الإجراءات</th>
+                  <th className="p-3 print:hidden">الإجراءات</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
@@ -309,7 +309,7 @@ export default function JournalDetailPage() {
                       <td className="p-3 font-extrabold text-cyan-700 dark:text-cyan-400 text-base font-mono-num">
                         {Number(tx.amount).toLocaleString()} ر.س
                       </td>
-                      <td className="p-3">
+                      <td className="p-3 print:hidden">
                         {!tx.projectId && (
                           <Link
                             href={`/unassigned-projects?txId=${tx.id}`}
