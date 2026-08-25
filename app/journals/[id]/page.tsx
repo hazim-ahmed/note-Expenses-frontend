@@ -26,43 +26,48 @@ export default function JournalDetailPage() {
   const [isExportingExcel, setIsExportingExcel] = useState(false);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
 
-  const handleExportExcel = () => {
+  const handleExportExcel = async () => {
     try {
       setIsExportingExcel(true);
+      await downloadFile(`/journals/${journalId}/export/excel`, `Journal_${journal?.journalNumber || journalId}.xlsx`);
+    } catch {
+      // Fallback في حال تعذر الوصول للباك إند
       if (journal && Array.isArray(journal.transactions)) {
         const headers = [
           'م',
-          'نوع الدفع',
-          'رقم السند اليدوي',
-          'دفتر السندات',
-          'الرقم الداخلي',
+          'الرقم المرجعي',
+          'رقم السند',
+          'دفتر السند',
           'التاريخ',
           'المستفيد',
           'المشروع',
-          'التفاصيل والبيان',
+          'نوع الدفع',
+          'مرجع الدفع',
           'رقم الفاتورة',
+          'التفاصيل',
           'ملاحظات',
           'المبلغ (ر.س)'
         ];
         const rows = journal.transactions.map((tx: any, idx: number) => [
           idx + 1,
-          tx.paymentMethod?.name || 'نقدي',
+          tx.systemReference || '-',
           tx.manualVoucherNumber || '-',
           tx.voucherBookNumber || '-',
-          tx.systemReference || '-',
           tx.voucherDate ? new Date(tx.voucherDate).toLocaleDateString('ar-SA') : '-',
           tx.beneficiary?.name || '-',
           tx.project ? `${tx.project.projectName} ${tx.projectUnit ? `(وحدة ${tx.projectUnit.unitNumber})` : ''}` : 'غير مربوط',
-          tx.description || '-',
+          tx.paymentMethod?.name || 'نقدي',
+          tx.paymentReference || '-',
           tx.invoiceNumber || '-',
+          tx.description || '-',
           tx.notes || '-',
           Number(tx.amount) || 0,
         ]);
         const total = journal.transactions.reduce((sum: number, tx: any) => sum + (Number(tx.amount) || 0), 0);
-        rows.push(['الإجمالي العام', '', '', '', '', '', '', '', '', '', '', total]);
+        rows.push(['الإجمالي العام', '', '', '', '', '', '', '', '', '', '', '', total]);
         
         exportClientExcel(
-          `جدول المصروفات اليومية - ${journal.journalNumber || journalId} (التاريخ: ${new Date(journal.journalDate).toLocaleDateString('ar-SA')})`,
+          `جدول المصروفات اليومية - ${journal.journalNumber || journalId}`,
           headers,
           rows,
           `Journal_${journal.journalNumber || journalId}.csv`
@@ -70,8 +75,6 @@ export default function JournalDetailPage() {
       } else {
         alert('لا توجد بيانات متاحة للتصدير');
       }
-    } catch {
-      alert('حدث خطأ أثناء تنزيل الملف');
     } finally {
       setIsExportingExcel(false);
     }
