@@ -26,51 +26,59 @@ export default function JournalDetailPage() {
   const [isExportingExcel, setIsExportingExcel] = useState(false);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
 
-  const handleExportExcel = async () => {
+  const handleExportExcel = () => {
     try {
       setIsExportingExcel(true);
-      await downloadFile(`/journals/${journalId}/export/excel`, `Journal_${journal?.journalNumber || journalId}.xlsx`);
-    } catch {
-      // Fallback فوري لتصدير البيانات مباشرة من المتصفح
       if (journal && Array.isArray(journal.transactions)) {
-        const headers = ['م', 'نوع الدفع', 'رقم السند', 'الرقم الداخلي', 'التاريخ', 'المستفيد', 'المشروع', 'التفاصيل', 'المبلغ (ر.س)'];
+        const headers = [
+          'م',
+          'نوع الدفع',
+          'رقم السند اليدوي',
+          'دفتر السندات',
+          'الرقم الداخلي',
+          'التاريخ',
+          'المستفيد',
+          'المشروع',
+          'التفاصيل والبيان',
+          'رقم الفاتورة',
+          'ملاحظات',
+          'المبلغ (ر.س)'
+        ];
         const rows = journal.transactions.map((tx: any, idx: number) => [
           idx + 1,
           tx.paymentMethod?.name || 'نقدي',
           tx.manualVoucherNumber || '-',
+          tx.voucherBookNumber || '-',
           tx.systemReference || '-',
-          tx.voucherDate ? new Date(tx.voucherDate).toISOString().slice(0, 10) : '-',
+          tx.voucherDate ? new Date(tx.voucherDate).toLocaleDateString('ar-SA') : '-',
           tx.beneficiary?.name || '-',
-          tx.project?.projectName || 'غير مربوط',
+          tx.project ? `${tx.project.projectName} ${tx.projectUnit ? `(وحدة ${tx.projectUnit.unitNumber})` : ''}` : 'غير مربوط',
           tx.description || '-',
+          tx.invoiceNumber || '-',
+          tx.notes || '-',
           Number(tx.amount) || 0,
         ]);
         const total = journal.transactions.reduce((sum: number, tx: any) => sum + (Number(tx.amount) || 0), 0);
-        rows.push(['الإجمالي', '', '', '', '', '', '', '', total]);
+        rows.push(['الإجمالي العام', '', '', '', '', '', '', '', '', '', '', total]);
+        
         exportClientExcel(
-          `جدول المصروفات اليومية - ${journal.journalNumber || journalId}`,
+          `جدول المصروفات اليومية - ${journal.journalNumber || journalId} (التاريخ: ${new Date(journal.journalDate).toLocaleDateString('ar-SA')})`,
           headers,
           rows,
           `Journal_${journal.journalNumber || journalId}.csv`
         );
       } else {
-        alert('تعذر استخراج بيانات اليومية للتصدير');
+        alert('لا توجد بيانات متاحة للتصدير');
       }
+    } catch {
+      alert('حدث خطأ أثناء تنزيل الملف');
     } finally {
       setIsExportingExcel(false);
     }
   };
 
-  const handleExportPDF = async () => {
-    try {
-      setIsExportingPdf(true);
-      await downloadFile(`/journals/${journalId}/export/pdf`, `Journal_${journal?.journalNumber || journalId}.pdf`);
-    } catch {
-      // Fallback فوري لفتح نافذة الطباعة المجهزة في المتصفح
-      window.print();
-    } finally {
-      setIsExportingPdf(false);
-    }
+  const handleExportPDF = () => {
+    window.print();
   };
 
   const { data: journal, isLoading, error } = useQuery({
@@ -331,6 +339,18 @@ export default function JournalDetailPage() {
                 {unassignedCount}
               </span>
             </div>
+          </div>
+        </div>
+
+        {/* خانات التوقيع والاعتماد للطباعة الرسمية */}
+        <div className="signatures-section hidden print:flex items-center justify-between pt-12 px-8">
+          <div className="text-center w-48">
+            <div className="border-t-2 border-dashed border-slate-600 mb-2"></div>
+            <span className="font-extrabold text-sm text-slate-800">توقيع المشرف</span>
+          </div>
+          <div className="text-center w-48">
+            <div className="border-t-2 border-dashed border-slate-600 mb-2"></div>
+            <span className="font-extrabold text-sm text-slate-800">اعتماد الإدارة</span>
           </div>
         </div>
       </div>
