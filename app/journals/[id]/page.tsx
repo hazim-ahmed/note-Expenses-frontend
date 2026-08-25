@@ -232,43 +232,44 @@ export default function JournalDetailPage() {
         </div>
 
         {/* الترويسة المحاسبية الرسمية للطباعة (تظهر فقط عند الطباعة أو التصدير) */}
-        <div className="hidden print:block mb-6 border-b-2 border-slate-900 pb-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-right">
-              <h2 className="text-base font-bold text-slate-800">نظام إدارة المصروفات وسندات الصرف</h2>
-              <span className="text-xs text-slate-500">إدارة الشؤون المالية والحسابات العامة</span>
+        <div className="hidden print:block mb-4 border-b-2 border-slate-800 pb-3">
+          <div className="flex items-start justify-between mb-3">
+            <div className="text-right w-1/3">
+              <h2 className="text-xs font-bold text-slate-900">نظام إدارة المصروفات وسندات الصرف</h2>
+              <span className="text-[10px] text-slate-600 block">إدارة الشؤون المالية والحسابات العامة</span>
             </div>
-            <div className="text-center">
-              <h1 className="text-xl font-black text-slate-900 tracking-tight">كشف المصروفات واليومية العامة</h1>
-              <span className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-0.5 rounded-full border border-slate-300">
-                {journal.status === 'CLOSED' ? 'يومية مقفلة ومعتمدة' : 'يومية مفتوحة قيد المراجعة'}
+            <div className="text-center w-1/3">
+              <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">« دفتر المصروفات »</h1>
+              <span className="text-[11px] font-semibold text-slate-700 block">
+                {journal.status === 'CLOSED' ? 'سجل اليومية العامة المعتمدة' : 'سجل اليومية العامة - قيد المراجعة'}
               </span>
             </div>
-            <div className="text-left text-xs text-slate-600 space-y-1">
-              <div><strong>تاريخ الطباعة:</strong> {new Date().toLocaleDateString('ar-SA')}</div>
-              <div><strong>وقت الطباعة:</strong> {new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}</div>
+            <div className="text-left w-1/3 text-[10px] text-slate-600 space-y-0.5">
+              <div><strong>رقم الكشف:</strong> <span className="font-mono">{journal.journalNumber || journalId}</span></div>
+              <div><strong>تاريخ التقرير:</strong> {new Date(journal.journalDate).toLocaleDateString('ar-SA')}</div>
+              <div><strong>وقت الإنشاء:</strong> {new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}</div>
             </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-2 bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs text-slate-700">
-            <div><strong>رقم اليومية:</strong> <span className="font-mono font-bold">{journal.journalNumber || journalId}</span></div>
-            <div><strong>الصندوق المالي:</strong> {journal.cashbox?.name || 'الصندوق الرئيسي'}</div>
-            <div><strong>تاريخ اليومية:</strong> {new Date(journal.journalDate).toLocaleDateString('ar-SA')}</div>
-            <div><strong>إجمالي السندات:</strong> <span className="font-bold font-mono">{totalCount} سند</span></div>
+          <div className="grid grid-cols-4 gap-0 border border-slate-300 bg-slate-50 text-[11px] text-slate-800">
+            <div className="p-2 border-l border-slate-300"><strong>عدد المصروفات:</strong> <span className="font-mono font-bold">{totalCount} سند</span></div>
+            <div className="p-2 border-l border-slate-300"><strong>إجمالي قيمة المصروفات:</strong> <span className="font-mono font-bold text-slate-900">{totalAmount.toLocaleString()} ر.س</span></div>
+            <div className="p-2 border-l border-slate-300"><strong>تاريخ بداية الفترة:</strong> {new Date(journal.journalDate).toLocaleDateString('ar-SA')}</div>
+            <div className="p-2"><strong>الصندوق المالي:</strong> {journal.cashbox?.name || 'الصندوق الرئيسي'}</div>
           </div>
         </div>
 
         {/* Action Error Banner */}
         {actionError && (
-          <div className="p-4 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 rounded-xl text-sm font-semibold flex items-center gap-3">
+          <div className="p-4 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 rounded-xl text-sm font-semibold flex items-center gap-3 print:hidden">
             <AlertCircle className="w-5 h-5 shrink-0" />
             <span>{actionError}</span>
           </div>
         )}
 
         {/* Transactions Table */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-xl overflow-hidden">
-          <div className="p-4 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 font-bold text-slate-700 dark:text-slate-200 text-sm flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-xl overflow-hidden print:border-none print:shadow-none print:rounded-none">
+          <div className="p-4 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 font-bold text-slate-700 dark:text-slate-200 text-sm flex items-center justify-between print:hidden">
             <span>سندات الصرف في هذه اليومية ({totalCount} سند)</span>
             {unassignedCount > 0 && (
               <span className="text-xs font-black text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-3 py-1 rounded-lg border border-rose-200 dark:border-rose-800/60 print:hidden">
@@ -278,77 +279,82 @@ export default function JournalDetailPage() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-right border-collapse text-sm">
+            <table className="w-full text-right border-collapse text-sm print:text-[10px]">
               <thead>
-                <tr className="bg-slate-100/70 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
-                  <th className="p-3">#</th>
-                  <th className="p-3">رقم السند اليدوي</th>
-                  <th className="p-3">الرقم المرجعي</th>
-                  <th className="p-3">المستفيد</th>
-                  <th className="p-3">التفاصيل والبيان</th>
-                  <th className="p-3">المشروع</th>
-                  <th className="p-3">طريقة الدفع</th>
-                  <th className="p-3">رقم الفاتورة</th>
-                  <th className="p-3">ملاحظات</th>
-                  <th className="p-3">المبلغ</th>
-                  <th className="p-3 print:hidden">الإجراءات</th>
+                <tr className="bg-slate-800 dark:bg-slate-800 text-white border-b border-slate-300 text-xs font-bold print:bg-[#1F2937] print:text-white">
+                  <th className="p-2.5 text-center w-10">#</th>
+                  <th className="p-2.5 text-center">تاريخ المصروف</th>
+                  <th className="p-2.5">بيان المصروف</th>
+                  <th className="p-2.5">المستفيد</th>
+                  <th className="p-2.5">التصنيف</th>
+                  <th className="p-2.5">مركز التكلفة (المشروع)</th>
+                  <th className="p-2.5 text-center">رقم السند</th>
+                  <th className="p-2.5 text-center">رقم الفاتورة</th>
+                  <th className="p-2.5 text-left font-mono">المبلغ</th>
+                  <th className="p-2.5">الملاحظات</th>
+                  <th className="p-2.5 print:hidden">الإجراءات</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80">
                 {txs.length === 0 ? (
                   <tr>
-                    <td colSpan={11} className="p-8 text-center text-slate-400 font-medium">
-                      لا توجد عمليات مسجلة في هذه اليومية حتى الآن.
+                    <td colSpan={11} className="p-8 text-center text-slate-500 font-bold text-base">
+                      لا توجد مصروفات خلال الفترة المحددة
                     </td>
                   </tr>
                 ) : (
-                  txs.map((tx: any, idx: number) => (
-                    <tr key={tx.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-                      <td className="p-3 font-semibold text-slate-500">{idx + 1}</td>
-                      <td className="p-3 font-bold text-slate-800 dark:text-slate-200">
-                        {tx.manualVoucherNumber || '-'}
+                  <>
+                    {txs.map((tx: any, idx: number) => (
+                      <tr key={tx.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 print:even:bg-[#F8FAFC]">
+                        <td className="p-2.5 text-center font-mono text-slate-500">{idx + 1}</td>
+                        <td className="p-2.5 text-center font-mono text-xs">{new Date(tx.createdAt || journal.journalDate).toLocaleDateString('ar-SA')}</td>
+                        <td className="p-2.5 font-medium text-slate-800 dark:text-slate-200 max-w-xs">{tx.description || '—'}</td>
+                        <td className="p-2.5 font-semibold text-slate-700 dark:text-slate-300">{tx.beneficiary?.name || tx.beneficiaryName || '—'}</td>
+                        <td className="p-2.5 text-xs text-slate-600 dark:text-slate-400">{tx.category?.name || '—'}</td>
+                        <td className="p-2.5 font-semibold text-xs">
+                          {tx.project ? (
+                            <span className="text-slate-800 dark:text-cyan-300 print:text-slate-800">
+                              {tx.project.projectName}
+                            </span>
+                          ) : (
+                            <span className="text-rose-600 print:text-slate-500">
+                              —
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-2.5 text-center font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
+                          {tx.manualVoucherNumber || tx.systemReference || '—'}
+                        </td>
+                        <td className="p-2.5 text-center font-mono text-xs text-slate-600 dark:text-slate-400">
+                          {tx.invoiceNumber || '—'}
+                        </td>
+                        <td className="p-2.5 font-bold text-slate-900 dark:text-cyan-400 text-left font-mono whitespace-nowrap">
+                          {Number(tx.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ر.س
+                        </td>
+                        <td className="p-2.5 text-slate-500 dark:text-slate-400 text-xs max-w-[150px]" title={tx.notes || ''}>
+                          {tx.notes || '—'}
+                        </td>
+                        <td className="p-2.5 print:hidden">
+                          {!tx.projectId && (
+                            <Link
+                              href={`/unassigned-projects?txId=${tx.id}`}
+                              className="text-xs bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 font-bold px-2.5 py-1 rounded-lg border border-rose-300 dark:border-rose-700"
+                            >
+                              ربط بمشروع
+                            </Link>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                    {/* صف الإجمالي الكلي للجدول */}
+                    <tr className="bg-slate-100 dark:bg-slate-800/90 font-bold text-slate-900 dark:text-white border-t-2 border-slate-800 print:bg-[#EEF2F6]">
+                      <td colSpan={8} className="p-3 text-center font-extrabold text-sm">الإجمالي الكلي</td>
+                      <td className="p-3 font-extrabold text-sm text-left font-mono whitespace-nowrap">
+                        {totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ر.س
                       </td>
-                      <td className="p-3 font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">{tx.systemReference}</td>
-                      <td className="p-3 font-semibold text-slate-700 dark:text-slate-200">{tx.beneficiary?.name || tx.beneficiaryName}</td>
-                      <td className="p-3 text-slate-600 dark:text-slate-400 max-w-xs truncate">{tx.description}</td>
-                      <td className="p-3 font-bold">
-                        {tx.project ? (
-                          <span className="text-cyan-700 dark:text-cyan-300 bg-cyan-50 dark:bg-cyan-950/60 px-2.5 py-1 rounded-lg border border-cyan-200 dark:border-cyan-800/60 text-xs">
-                            {tx.project.projectName}
-                          </span>
-                        ) : (
-                          <span className="text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-2.5 py-1 rounded-lg border border-rose-200 dark:border-rose-800/60 text-xs">
-                            غير مربوط بمشروع
-                          </span>
-                        )}
-                      </td>
-                      <td className="p-3 text-slate-700 dark:text-slate-300 text-xs font-bold">
-                        {tx.paymentMethod?.name || '-'}
-                        {tx.paymentReference && (
-                          <span className="block text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-1">{tx.paymentReference}</span>
-                        )}
-                      </td>
-                      <td className="p-3 text-slate-600 dark:text-slate-400 font-mono text-xs">
-                        {tx.invoiceNumber || '-'}
-                      </td>
-                      <td className="p-3 text-slate-600 dark:text-slate-400 text-xs max-w-[180px] truncate" title={tx.notes || ''}>
-                        {tx.notes || '-'}
-                      </td>
-                      <td className="p-3 font-extrabold text-cyan-700 dark:text-cyan-400 text-base font-mono-num">
-                        {Number(tx.amount).toLocaleString()} ر.س
-                      </td>
-                      <td className="p-3 print:hidden">
-                        {!tx.projectId && (
-                          <Link
-                            href={`/unassigned-projects?txId=${tx.id}`}
-                            className="text-xs bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 font-bold px-2.5 py-1 rounded-lg border border-rose-300 dark:border-rose-700"
-                          >
-                            ربط بمشروع
-                          </Link>
-                        )}
-                      </td>
+                      <td colSpan={2}></td>
                     </tr>
-                  ))
+                  </>
                 )}
               </tbody>
             </table>
