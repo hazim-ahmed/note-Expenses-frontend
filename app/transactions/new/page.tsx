@@ -379,8 +379,8 @@ export default function NewTransactionPage() {
         {/* Quick Add Beneficiary Modal */}
         {showAddBeneficiary && (
           <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div className="bg-[#182536] border border-[#C7A35A]/40 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-5">
-              <h3 className="font-extrabold text-lg text-white">إضافة مستفيد جديد</h3>
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-cyan-500/30 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-5">
+              <h3 className="font-extrabold text-lg text-slate-800 dark:text-white">إضافة مستفيد جديد</h3>
               <input
                 type="text"
                 value={newBeneficiaryName}
@@ -397,7 +397,7 @@ export default function NewTransactionPage() {
                     }
                   }}
                   disabled={createBeneficiaryMutation.isPending}
-                  className="btn-gold-primary flex-1"
+                  className="btn-cyan-primary flex-1"
                 >
                   إضافة وإختيار
                 </button>

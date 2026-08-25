@@ -16,6 +16,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    // If user is already authenticated, redirect to dashboard
     const token = localStorage.getItem('accessToken');
     if (token) {
       router.replace('/dashboard');
@@ -30,6 +31,7 @@ export default function LoginPage() {
     try {
       const res = await api.post('/auth/login', { username, password });
       const { tokens, user } = res.data.data;
+
       setAuthLogin(tokens.accessToken, tokens.refreshToken, user);
     } catch (err: any) {
       if (!err.response) {
