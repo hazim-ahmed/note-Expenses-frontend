@@ -329,7 +329,7 @@ export default function JournalDetailPage() {
                         <td className="p-2 text-center font-mono text-xs text-slate-600 dark:text-slate-400 print:text-black print:border print:border-black">
                           {tx.invoiceNumber || '—'}
                         </td>
-                        <td className="p-2 font-bold text-slate-900 dark:text-cyan-400 text-left font-mono whitespace-nowrap print:text-black print:border print:border-black">
+                        <td className="p-2 font-black text-slate-900 dark:text-cyan-400 text-left font-mono whitespace-nowrap text-base print:text-[12px] print:text-black print:border print:border-black">
                           {Number(tx.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ر.س
                         </td>
                         <td className="p-2 text-slate-500 dark:text-slate-400 text-xs max-w-[150px] print:text-black print:border print:border-black" title={tx.notes || ''}>
@@ -349,8 +349,8 @@ export default function JournalDetailPage() {
                     ))}
                     {/* صف الإجمالي الكلي للجدول */}
                     <tr className="bg-slate-100 dark:bg-slate-800/90 font-bold text-slate-900 dark:text-white border-t-2 border-slate-800 print:bg-neutral-100 print:text-black print:border-t-2 print:border-b-4 print:border-black">
-                      <td colSpan={8} className="p-2.5 text-center font-extrabold text-sm print:text-black print:border print:border-black">الإجمالي الكلي</td>
-                      <td className="p-2.5 font-extrabold text-sm text-left font-mono whitespace-nowrap print:text-black print:border print:border-black">
+                      <td colSpan={8} className="p-2.5 text-center font-black text-base print:text-sm print:text-black print:border print:border-black">الإجمالي الكلي</td>
+                      <td className="p-2.5 font-black text-lg print:text-[14px] text-left font-mono whitespace-nowrap print:text-black print:border print:border-black">
                         {totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ر.س
                       </td>
                       <td colSpan={2} className="print:border print:border-black"></td>
