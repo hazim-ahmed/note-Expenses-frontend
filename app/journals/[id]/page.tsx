@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/axios';
-import { downloadFile, openPdfInNewTab } from '@/lib/download';
+import { downloadFile, exportClientExcel, openPdfInNewTab } from '@/lib/download';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import {
@@ -30,8 +30,32 @@ export default function JournalDetailPage() {
     try {
       setIsExportingExcel(true);
       await downloadFile(`/journals/${journalId}/export/excel`, `Journal_${journal?.journalNumber || journalId}.xlsx`);
-    } catch (err: any) {
-      alert('فشل في تصدير ملف الإكسل');
+    } catch {
+      // Fallback فوري لتصدير البيانات مباشرة من المتصفح
+      if (journal && Array.isArray(journal.transactions)) {
+        const headers = ['م', 'نوع الدفع', 'رقم السند', 'الرقم الداخلي', 'التاريخ', 'المستفيد', 'المشروع', 'التفاصيل', 'المبلغ (ر.س)'];
+        const rows = journal.transactions.map((tx: any, idx: number) => [
+          idx + 1,
+          tx.paymentMethod?.name || 'نقدي',
+          tx.manualVoucherNumber || '-',
+          tx.systemReference || '-',
+          tx.voucherDate ? new Date(tx.voucherDate).toISOString().slice(0, 10) : '-',
+          tx.beneficiary?.name || '-',
+          tx.project?.projectName || 'غير مربوط',
+          tx.description || '-',
+          Number(tx.amount) || 0,
+        ]);
+        const total = journal.transactions.reduce((sum: number, tx: any) => sum + (Number(tx.amount) || 0), 0);
+        rows.push(['الإجمالي', '', '', '', '', '', '', '', total]);
+        exportClientExcel(
+          `جدول المصروفات اليومية - ${journal.journalNumber || journalId}`,
+          headers,
+          rows,
+          `Journal_${journal.journalNumber || journalId}.csv`
+        );
+      } else {
+        alert('تعذر استخراج بيانات اليومية للتصدير');
+      }
     } finally {
       setIsExportingExcel(false);
     }
@@ -41,8 +65,9 @@ export default function JournalDetailPage() {
     try {
       setIsExportingPdf(true);
       await downloadFile(`/journals/${journalId}/export/pdf`, `Journal_${journal?.journalNumber || journalId}.pdf`);
-    } catch (err: any) {
-      alert('فشل في تصدير ملف الـ PDF');
+    } catch {
+      // Fallback فوري لفتح نافذة الطباعة المجهزة في المتصفح
+      window.print();
     } finally {
       setIsExportingPdf(false);
     }
