@@ -18,8 +18,6 @@
       }
     ],
     "paths": {
-      "@expense-system/shared": ["./lib/shared/index.ts"],
-      "@expense-system/shared/*": ["./lib/shared/*"],
       "@/*": ["./*"]
     }
   },
