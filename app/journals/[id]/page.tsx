@@ -153,7 +153,7 @@ export default function JournalDetailPage() {
     <DashboardLayout>
       <div className="space-y-6 pb-28">
         {/* Header Info & Action Controls */}
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-xl flex flex-wrap items-center justify-between gap-4">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-xl flex flex-wrap items-center justify-between gap-4 print:hidden">
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-extrabold text-slate-800 dark:text-white font-mono-num">{journal.journalNumber}</h1>
@@ -231,6 +231,34 @@ export default function JournalDetailPage() {
           </div>
         </div>
 
+        {/* الترويسة المحاسبية الرسمية للطباعة (تظهر فقط عند الطباعة أو التصدير) */}
+        <div className="hidden print:block mb-6 border-b-2 border-slate-900 pb-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-right">
+              <h2 className="text-base font-bold text-slate-800">نظام إدارة المصروفات وسندات الصرف</h2>
+              <span className="text-xs text-slate-500">إدارة الشؤون المالية والحسابات العامة</span>
+            </div>
+            <div className="text-center">
+              <h1 className="text-xl font-black text-slate-900 tracking-tight">كشف المصروفات واليومية العامة</h1>
+              <span className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-0.5 rounded-full border border-slate-300">
+                {journal.status === 'CLOSED' ? 'يومية مقفلة ومعتمدة' : 'يومية مفتوحة قيد المراجعة'}
+              </span>
+            </div>
+            <div className="text-left text-xs text-slate-600 space-y-1">
+              <div><strong>تاريخ الطباعة:</strong> {new Date().toLocaleDateString('ar-SA')}</div>
+              <div><strong>وقت الطباعة:</strong> {new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-4 gap-2 bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs text-slate-700">
+            <div><strong>رقم اليومية:</strong> <span className="font-mono font-bold">{journal.journalNumber || journalId}</span></div>
+            <div><strong>الصندوق المالي:</strong> {journal.cashbox?.name || 'الصندوق الرئيسي'}</div>
+            <div><strong>تاريخ اليومية:</strong> {new Date(journal.journalDate).toLocaleDateString('ar-SA')}</div>
+            <div><strong>إجمالي السندات:</strong> <span className="font-bold font-mono">{totalCount} سند</span></div>
+          </div>
+        </div>
+
+        {/* Action Error Banner */}
         {actionError && (
           <div className="p-4 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 rounded-xl text-sm font-semibold flex items-center gap-3">
             <AlertCircle className="w-5 h-5 shrink-0" />
@@ -353,15 +381,30 @@ export default function JournalDetailPage() {
           </div>
         </div>
 
-        {/* خانات التوقيع والاعتماد للطباعة الرسمية */}
-        <div className="signatures-section hidden print:flex items-center justify-between pt-12 px-8">
-          <div className="text-center w-48">
-            <div className="border-t-2 border-dashed border-slate-600 mb-2"></div>
-            <span className="font-extrabold text-sm text-slate-800">توقيع المشرف</span>
+        {/* قسم التواقيع والاعتمادات الرسمية الثلاثية للطباعة والمحاسبة */}
+        <div className="signatures-section hidden print:flex items-start justify-between pt-10 px-6 mt-6 border-t border-slate-300">
+          <div className="text-center w-52 space-y-8">
+            <span className="font-extrabold text-xs text-slate-800 block">إعداد: أمين الصندوق / المنظم</span>
+            <div className="border-t border-slate-700 pt-1">
+              <span className="text-[11px] text-slate-600 block">الاسم: ...................................</span>
+              <span className="text-[11px] text-slate-600 block mt-1">التوقيع: .................................</span>
+            </div>
           </div>
-          <div className="text-center w-48">
-            <div className="border-t-2 border-dashed border-slate-600 mb-2"></div>
-            <span className="font-extrabold text-sm text-slate-800">اعتماد الإدارة</span>
+
+          <div className="text-center w-52 space-y-8">
+            <span className="font-extrabold text-xs text-slate-800 block">تدقيق: المشرف المالي / المراجع</span>
+            <div className="border-t border-slate-700 pt-1">
+              <span className="text-[11px] text-slate-600 block">الاسم: ...................................</span>
+              <span className="text-[11px] text-slate-600 block mt-1">التوقيع: .................................</span>
+            </div>
+          </div>
+
+          <div className="text-center w-52 space-y-8">
+            <span className="font-extrabold text-xs text-slate-800 block">اعتماد: المدير العام / الإدارة</span>
+            <div className="border-t border-slate-700 pt-1">
+              <span className="text-[11px] text-slate-600 block">الاعتماد: ..............................</span>
+              <span className="text-[11px] text-slate-600 block mt-1">التاريخ والختم: [ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ]</span>
+            </div>
           </div>
         </div>
       </div>
