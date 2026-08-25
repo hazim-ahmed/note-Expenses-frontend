@@ -104,7 +104,7 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   input[type="date"],
   select,
   textarea {
-    @apply w-full p-3 rounded-xl text-sm font-semibold transition-all duration-200 outline-none;
+    @apply w-full px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 outline-none;
     @apply bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400;
     @apply dark:bg-[#0b1329] dark:border-slate-800 dark:text-white dark:placeholder-slate-500;
   }

@@ -9,14 +9,13 @@ import { Lock, User, AlertCircle, Loader2, Wallet, Eye, EyeOff } from 'lucide-re
 export default function LoginPage() {
   const router = useRouter();
   const { login: setAuthLogin } = useAuth();
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // If user is already authenticated, redirect to dashboard
     const token = localStorage.getItem('accessToken');
     if (token) {
       router.replace('/dashboard');
@@ -31,7 +30,6 @@ export default function LoginPage() {
     try {
       const res = await api.post('/auth/login', { username, password });
       const { tokens, user } = res.data.data;
-
       setAuthLogin(tokens.accessToken, tokens.refreshToken, user);
     } catch (err: any) {
       if (!err.response) {
@@ -47,7 +45,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070d19] text-white flex items-center justify-center p-4 selection:bg-cyan-500 selection:text-slate-950">
+    <div
+      dir="rtl"
+      className="min-h-screen bg-[#070d19] text-white flex items-center justify-center p-4 selection:bg-cyan-500 selection:text-slate-950"
+    >
       <div className="w-full max-w-md bg-[#0b1329]/90 backdrop-blur-xl border border-cyan-500/30 p-8 rounded-3xl shadow-2xl shadow-cyan-950/50 space-y-6">
         <div className="text-center space-y-2">
           <div className="inline-flex p-3 bg-cyan-500/10 rounded-2xl text-cyan-400 border border-cyan-500/20 mb-2">
@@ -68,14 +69,17 @@ export default function LoginPage() {
           <div>
             <label className="block text-xs font-bold text-zinc-300 mb-1.5">اسم المستخدم *</label>
             <div className="relative flex items-center">
-              <User className="w-5 h-5 text-zinc-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+              <span className="absolute right-3.5 z-10 pointer-events-none text-zinc-400 flex items-center justify-center">
+                <User className="w-5 h-5" />
+              </span>
               <input
                 type="text"
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="أدخل اسم المستخدم..."
-                className="w-full !pr-11 !pl-4 !py-3 bg-[#070d19]/80 border border-slate-800 rounded-xl text-sm font-medium focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 text-white outline-none transition"
+                style={{ paddingRight: '2.85rem', paddingLeft: '1rem' }}
+                className="w-full py-3 bg-[#070d19]/80 border border-slate-800 rounded-xl text-sm font-medium focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 text-white outline-none transition"
               />
             </div>
           </div>
@@ -83,26 +87,25 @@ export default function LoginPage() {
           <div>
             <label className="block text-xs font-bold text-zinc-300 mb-1.5">كلمة المرور *</label>
             <div className="relative flex items-center">
-              <Lock className="w-5 h-5 text-zinc-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+              <span className="absolute right-3.5 z-10 pointer-events-none text-zinc-400 flex items-center justify-center">
+                <Lock className="w-5 h-5" />
+              </span>
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full !pr-11 !pl-11 !py-3 bg-[#070d19]/80 border border-slate-800 rounded-xl text-sm font-mono focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 text-white outline-none transition"
+                style={{ paddingRight: '2.85rem', paddingLeft: '2.85rem' }}
+                className="w-full py-3 bg-[#070d19]/80 border border-slate-800 rounded-xl text-sm font-mono focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 text-white outline-none transition"
               />
               <button
                 type="button"
+                tabIndex={-1}
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-cyan-400 transition p-1 focus:outline-none"
-                title={showPassword ? 'إخفاء كلمة المرور' : 'عرض كلمة المرور'}
+                className="absolute left-3.5 z-10 text-zinc-400 hover:text-white transition flex items-center justify-center"
               >
-                {showPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5 text-zinc-400" />}
               </button>
             </div>
           </div>
@@ -110,7 +113,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 bg-gradient-to-r from-cyan-500 via-teal-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-extrabold rounded-xl shadow-lg shadow-cyan-500/25 text-sm transition flex items-center justify-center gap-2 mt-2 border border-cyan-300/30"
+            className="w-full py-3.5 bg-gradient-to-r from-cyan-500 via-teal-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-extrabold rounded-xl shadow-lg shadow-cyan-500/25 text-sm transition flex items-center justify-center gap-2 mt-2 border border-cyan-300/30 active:scale-98"
           >
             {loading ? (
               <>
@@ -122,6 +125,12 @@ export default function LoginPage() {
             )}
           </button>
         </form>
+
+        <div className="pt-4 border-t border-slate-800 text-center">
+          <p className="text-xs text-zinc-400 font-medium">
+            الحساب التلقائي التجريبي: <span className="font-mono text-cyan-400 font-bold">admin</span> / <span className="font-mono text-cyan-400 font-bold">AdminPass123!</span>
+          </p>
+        </div>
       </div>
     </div>
   );
